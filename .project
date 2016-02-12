@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
+<<<<<<< HEAD
 	<name>Robot_v2.0</name>
+=======
+	<name>Robot</name>
+>>>>>>> de3f46ff5f5ae2d742d09a649f1dd869660b6698
 	<comment></comment>
 	<projects>
 	</projects>
