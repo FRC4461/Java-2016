@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
+<<<<<<< HEAD
 	<name>RobotCode</name>
+=======
+<<<<<<< HEAD
+	<name>Robot_v2.0</name>
+=======
+	<name>Robot</name>
+>>>>>>> de3f46ff5f5ae2d742d09a649f1dd869660b6698
+>>>>>>> 1f377bf213007eec683f742cf90c018d9666feb4
 	<comment></comment>
 	<projects>
 	</projects>

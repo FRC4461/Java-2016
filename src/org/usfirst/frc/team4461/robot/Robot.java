@@ -1,77 +1,108 @@
-
 package org.usfirst.frc.team4461.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
+import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
+import edu.wpi.first.wpilibj.Encoder;
 
 /**
- * The VM is configured to automatically run this class, and to call the
- * functions corresponding to each mode, as described in the IterativeRobot
- * documentation. If you change the name of this class or the package after
- * creating this project, you must also update the manifest file in the resource
- * directory.
+ * @author ramen 4461
+ * @version 1.0 - Test for github Push
  */
-public class Robot extends IterativeRobot {
-    final String defaultAuto = "Default";
-    final String customAuto = "My Auto";
-    String autoSelected;
-    SendableChooser chooser;
-	
-    /**
-     * This function is run when the robot is first started up and should be
-     * used for any initialization code.
-     */
-    public void robotInit() {
-        chooser = new SendableChooser();
-        chooser.addDefault("Default Auto", defaultAuto);
-        chooser.addObject("My Auto", customAuto);
-        SmartDashboard.putData("Auto choices", chooser);
-    }
-    
-	/**
-	 * This autonomous (along with the chooser code above) shows how to select between different autonomous modes
-	 * using the dashboard. The sendable chooser code works with the Java SmartDashboard. If you prefer the LabVIEW
-	 * Dashboard, remove all of the chooser code and uncomment the getString line to get the auto name from the text box
-	 * below the Gyro
-	 *
-	 * You can add additional auto modes by adding additional comparisons to the switch structure below with additional strings.
-	 * If using the SendableChooser make sure to add them to the chooser code above as well.
-	 */
-    public void autonomousInit() {
-    	autoSelected = (String) chooser.getSelected();
-//		autoSelected = SmartDashboard.getString("Auto Selector", defaultAuto);
-		System.out.println("Auto selected: " + autoSelected);
-    }
 
-    /**
-     * This function is called periodically during autonomous
-     */
+	public class Robot extends IterativeRobot {
+		
+// Variables
+	boolean autoBreak = true; // This determines when to break in the autonomous code (see autonomousPeriodic)	
+    boolean done=false;
+	
+//	Motor's
+	CANTalon talon1 = new CANTalon(1);
+	CANTalon talon2 = new CANTalon(2);
+	CANTalon talon3 = new CANTalon(3);
+	CANTalon talon4 = new CANTalon(4);
+		
+	 
+//	Encoder
+	Encoder encoder = new Encoder(7,8);
+	
+	FeedbackDevice encoderFeedback;
+	
+//	Joysticks
+	Joystick leftJoystick = new Joystick(0);
+	Joystick rightJoystick = new Joystick(1);
+	
+//Left Buttons
+	JoystickButton lbutton1 = new JoystickButton(leftJoystick, 1);
+	JoystickButton lbutton2 = new JoystickButton(leftJoystick, 2);
+	JoystickButton lbutton3 = new JoystickButton(leftJoystick, 3);
+	JoystickButton lbutton4 = new JoystickButton(leftJoystick, 4);
+	JoystickButton lbutton5 = new JoystickButton(leftJoystick, 5);
+	JoystickButton lbutton6 = new JoystickButton(leftJoystick, 6);
+	JoystickButton lbutton7 = new JoystickButton(leftJoystick, 7);
+	JoystickButton lbutton8 = new JoystickButton(leftJoystick, 8);
+	JoystickButton lbutton9 = new JoystickButton(leftJoystick, 9);
+	
+//Right Buttons
+	JoystickButton rbutton1 = new JoystickButton(rightJoystick, 1);
+	JoystickButton rbutton2 = new JoystickButton(rightJoystick, 2);
+	JoystickButton rbutton3 = new JoystickButton(rightJoystick, 3);
+	JoystickButton rbutton4 = new JoystickButton(rightJoystick, 4);
+	JoystickButton rbutton5 = new JoystickButton(rightJoystick, 5);
+	JoystickButton rbutton6 = new JoystickButton(rightJoystick, 6);
+	JoystickButton rbutton7 = new JoystickButton(rightJoystick, 7);
+	JoystickButton rbutton8 = new JoystickButton(rightJoystick, 8);
+	JoystickButton rbutton9 = new JoystickButton(rightJoystick, 9);
+	
+//	RobotDrive
+	RobotDrive chassis = new RobotDrive(talon1, talon2, talon3, talon4);
+
+/*
+ * 1 = Back Left
+ * 2 = Front Left
+ * 3 = Back Right
+ * 4 = Front right
+ */
+
+    public void autonomousInit() {
+    	autoBreak = true; // Resets the autonomous break
+    	chassis.setSafetyEnabled(false); // Allows us to do autonomous
+    }
     public void autonomousPeriodic() {
-    	switch(autoSelected) {
-    	case customAuto:
-        //Put custom auto code here   
-            break;
-    	case defaultAuto:
-    	default:
-    	//Put default auto code here
-            break;
+    	while(autoBreak) { // Put auto code above the "autoBreak = false;" line.
+    		
+    		autoBreak = false;
     	}
     }
 
-    /**
-     * This function is called periodically during operator control
-     */
-    public void teleopPeriodic() {
-        
+	public void teleopInit() {
+		
+	}
+    public void teleopPeriodic() { // This is teleop
+ 	   int currentPosition = talon4.getEncPosition();
+    	
+        chassis.tankDrive(-leftJoystick.getY(), -rightJoystick.getY());
+
+       if(!done && lbutton1.get()){
+    	   talon4.setPosition(0);
+    	   System.out.println(currentPosition);
+    	   talon4.enableControl();
+    	   talon4.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+     	   talon4.changeControlMode(TalonControlMode.Position);
+    	   talon4.setPID(0.1, .005, 0);
+    	   System.out.println(currentPosition);
+    	   talon4.set(50);
+    	   System.out.println(currentPosition);
+    	   done=true;
+       }
+       
+//       else{
+//    	   talon4.set(0);
+//       }
+////       } //If
     }
-    
-    /**
-     * This function is called periodically during test mode
-     */
-    public void testPeriodic() {
-    
-    }
-    
 }
