@@ -14,11 +14,12 @@ import edu.wpi.first.wpilibj.Encoder;
  * @version 1.0 - Test for github Push
  */
 
-	public class Robot extends IterativeRobot {
+public class Robot extends IterativeRobot {
 		
 // Variables
 	boolean autoBreak = true; // This determines when to break in the autonomous code (see autonomousPeriodic)	
-    boolean done=false;
+    boolean done = false;
+    double currentPosition;
 	
 //	Motor's
 	CANTalon talon1 = new CANTalon(1);
@@ -80,29 +81,33 @@ import edu.wpi.first.wpilibj.Encoder;
     }
 
 	public void teleopInit() {
-		
+		talon4.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+		talon4.changeControlMode(TalonControlMode.Position);
+		talon4.enableControl();
+		talon4.setPID(0.1, .005, 0);
+		talon4.setPosition(0);
 	}
-    public void teleopPeriodic() { // This is teleop
- 	   int currentPosition = talon4.getEncPosition();
-    	
-        chassis.tankDrive(-leftJoystick.getY(), -rightJoystick.getY());
-
-       if(!done && lbutton1.get()){
-    	   talon4.setPosition(0);
-    	   System.out.println(currentPosition);
-    	   talon4.enableControl();
-    	   talon4.setFeedbackDevice(FeedbackDevice.QuadEncoder);
-     	   talon4.changeControlMode(TalonControlMode.Position);
-    	   talon4.setPID(0.1, .005, 0);
-    	   System.out.println(currentPosition);
-    	   talon4.set(50);
-    	   System.out.println(currentPosition);
-    	   done=true;
-       }
-       
-//       else{
-//    	   talon4.set(0);
-//       }
-////       } //If
+    public void teleopPeriodic() { // This is teleop	   
+ 	   chassis.tankDrive(-leftJoystick.getY(), -rightJoystick.getY());
+ 	   
+ 	   if(rbutton4.get()) {
+ 		   talon4.setPosition(50);
+ 		   printPos(talon4);
+ 		   resetTalon(talon4);
+ 	   }
+ 	   if(rbutton3.get()) {
+ 		   talon4.setPosition(25);
+ 		   printPos(talon4);
+ 		   resetTalon(talon4);
+ 	   }
+    }
+    
+    public void resetTalon(CANTalon talon) {
+    	talon.setPosition(0);
+    	currentPosition = talon.getPosition();
+    }
+    
+    public void printPos(CANTalon talon) {
+    	System.out.println(talon.getPosition());
     }
 }
