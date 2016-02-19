@@ -1,4 +1,3 @@
-
 package org.usfirst.frc.team4461.robot;
 
 import edu.wpi.first.wpilibj.CANTalon;
@@ -7,22 +6,16 @@ import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
-import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * 
  * @author Team 4461
- * @version 2.0
+ * @version 2.2
  * 
  */
 
 public class Robot extends IterativeRobot {
-    
 	// Variables
 	boolean autoBreak = true; // This determines when to break in the autonomous code (see autonomousPeriodic)
 	boolean encTest = true; // Just for testing our encoder
@@ -32,7 +25,6 @@ public class Robot extends IterativeRobot {
     CANTalon talon2 = new CANTalon(2);
     CANTalon talon3 = new CANTalon(3);
     CANTalon talon4 = new CANTalon(4);
-    CANTalon talon5 = new CANTalon(5);
     
     // Joysticks
     Joystick leftJoystick = new Joystick(0);
@@ -61,7 +53,7 @@ public class Robot extends IterativeRobot {
     JoystickButton rButton9 = new JoystickButton(rightJoystick, 9);
     
     // Robot Drive
-    RobotDrive chassis = new RobotDrive(talon1, talon3, talon2, talon4);
+    RobotDrive chassis = new RobotDrive(talon1, talon2, talon3, talon4);
     
     public void robotInit() {
     	
@@ -81,19 +73,27 @@ public class Robot extends IterativeRobot {
     
     public void teleopInit() {
     	// Initializes our planetary encoder hooked up to our CANTalon
+    	encTest = true;
     	talon1.changeControlMode(TalonControlMode.Position);
     	talon1.setFeedbackDevice(FeedbackDevice.QuadEncoder);
-    	talon1.setPID(0, 0, 0);
+    	talon1.setPID(.0001, 0, 0);
+    	talon1.configEncoderCodesPerRev(1440);
     	talon1.enableControl();
+    	//Only use on CANTalon's above 4
+    	//CANTalon 1-4 are used for Tank Drive
+    	//Currently set to CANTalon 1 for testing
     }
     
     public void teleopPeriodic() {
-    	chassis.drive(-leftJoystick.getY(), -rightJoystick.getY()); // Really basic drive for testing.
+    	talon1.enableControl();
+    	chassis.tankDrive(-leftJoystick.getY(), -rightJoystick.getY()); // Really basic drive for testing.
     	
     	if(lButton1.get() && encTest) {
     		printPos(talon1);
+    		printEncPos(talon1);
     		talon1.set(1440);
     		printPos(talon1);
+    		printEncPos(talon1);
     		encTest = false;
     	}
     }
@@ -105,7 +105,5 @@ public class Robot extends IterativeRobot {
     public void printEncPos(CANTalon talon) {
     	System.out.println("Enc Pos: " + talon.getEncPosition());
     }
-    
-    
     
 }
