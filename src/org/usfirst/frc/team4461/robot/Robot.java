@@ -1,113 +1,111 @@
+
 package org.usfirst.frc.team4461.robot;
 
-import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.RobotDrive;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
 import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
-import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Victor;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
- * @author ramen 4461
- * @version 1.0 - Test for github Push
+ * 
+ * @author Team 4461
+ * @version 2.0
+ * 
  */
 
 public class Robot extends IterativeRobot {
-		
-// Variables
-	boolean autoBreak = true; // This determines when to break in the autonomous code (see autonomousPeriodic)	
-    boolean done = false;
-    double currentPosition;
+    
+	// Variables
+	boolean autoBreak = true; // This determines when to break in the autonomous code (see autonomousPeriodic)
+	boolean encTest = true; // Just for testing our encoder
 	
-//	Motor's
-	CANTalon talon1 = new CANTalon(1);
-	CANTalon talon2 = new CANTalon(2);
-	CANTalon talon3 = new CANTalon(3);
-	CANTalon talon4 = new CANTalon(4);
-		
-	 
-//	Encoder
-	Encoder encoder = new Encoder(7,8);
-	
-	FeedbackDevice encoderFeedback;
-	
-//	Joysticks
-	Joystick leftJoystick = new Joystick(0);
-	Joystick rightJoystick = new Joystick(1);
-	
-//Left Buttons
-	JoystickButton lbutton1 = new JoystickButton(leftJoystick, 1);
-	JoystickButton lbutton2 = new JoystickButton(leftJoystick, 2);
-	JoystickButton lbutton3 = new JoystickButton(leftJoystick, 3);
-	JoystickButton lbutton4 = new JoystickButton(leftJoystick, 4);
-	JoystickButton lbutton5 = new JoystickButton(leftJoystick, 5);
-	JoystickButton lbutton6 = new JoystickButton(leftJoystick, 6);
-	JoystickButton lbutton7 = new JoystickButton(leftJoystick, 7);
-	JoystickButton lbutton8 = new JoystickButton(leftJoystick, 8);
-	JoystickButton lbutton9 = new JoystickButton(leftJoystick, 9);
-	
-//Right Buttons
-	JoystickButton rbutton1 = new JoystickButton(rightJoystick, 1);
-	JoystickButton rbutton2 = new JoystickButton(rightJoystick, 2);
-	JoystickButton rbutton3 = new JoystickButton(rightJoystick, 3);
-	JoystickButton rbutton4 = new JoystickButton(rightJoystick, 4);
-	JoystickButton rbutton5 = new JoystickButton(rightJoystick, 5);
-	JoystickButton rbutton6 = new JoystickButton(rightJoystick, 6);
-	JoystickButton rbutton7 = new JoystickButton(rightJoystick, 7);
-	JoystickButton rbutton8 = new JoystickButton(rightJoystick, 8);
-	JoystickButton rbutton9 = new JoystickButton(rightJoystick, 9);
-	
-//	RobotDrive
-	RobotDrive chassis = new RobotDrive(talon1, talon2, talon3, talon4);
-
-/*
- * 1 = Back Left
- * 2 = Front Left
- * 3 = Back Right
- * 4 = Front right
- */
-
+    // CANTalons
+    CANTalon talon1 = new CANTalon(1);
+    CANTalon talon2 = new CANTalon(2);
+    CANTalon talon3 = new CANTalon(3);
+    CANTalon talon4 = new CANTalon(4);
+    CANTalon talon5 = new CANTalon(5);
+    
+    // Joysticks
+    Joystick leftJoystick = new Joystick(0);
+    Joystick rightJoystick = new Joystick(1);
+    
+    // Left Joystick Buttons
+    JoystickButton lButton1 = new JoystickButton(leftJoystick, 1);
+    JoystickButton lButton2 = new JoystickButton(leftJoystick, 2);
+    JoystickButton lButton3 = new JoystickButton(leftJoystick, 3);
+    JoystickButton lButton4 = new JoystickButton(leftJoystick, 4);
+    JoystickButton lButton5 = new JoystickButton(leftJoystick, 5);
+    JoystickButton lButton6 = new JoystickButton(leftJoystick, 6);
+    JoystickButton lButton7 = new JoystickButton(leftJoystick, 7);
+    JoystickButton lButton8 = new JoystickButton(leftJoystick, 8);
+    JoystickButton lButton9 = new JoystickButton(leftJoystick, 9);
+    
+    // Right Joystick Buttons
+    JoystickButton rButton1 = new JoystickButton(rightJoystick, 1);
+    JoystickButton rButton2 = new JoystickButton(rightJoystick, 2);
+    JoystickButton rButton3 = new JoystickButton(rightJoystick, 3);
+    JoystickButton rButton4 = new JoystickButton(rightJoystick, 4);
+    JoystickButton rButton5 = new JoystickButton(rightJoystick, 5);
+    JoystickButton rButton6 = new JoystickButton(rightJoystick, 6);
+    JoystickButton rButton7 = new JoystickButton(rightJoystick, 7);
+    JoystickButton rButton8 = new JoystickButton(rightJoystick, 8);
+    JoystickButton rButton9 = new JoystickButton(rightJoystick, 9);
+    
+    // Robot Drive
+    RobotDrive chassis = new RobotDrive(talon1, talon3, talon2, talon4);
+    
+    public void robotInit() {
+    	
+    }
+    
     public void autonomousInit() {
     	autoBreak = true; // Resets the autonomous break
     	chassis.setSafetyEnabled(false); // Allows us to do autonomous
     }
+    
     public void autonomousPeriodic() {
     	while(autoBreak) { // Put auto code above the "autoBreak = false;" line.
     		
     		autoBreak = false;
     	}
     }
-
-	public void teleopInit() {
-		talon4.setFeedbackDevice(FeedbackDevice.QuadEncoder);
-		talon4.changeControlMode(TalonControlMode.Position);
-		talon4.enableControl();
-		talon4.setPID(0.1, .005, 0);
-		talon4.setPosition(0);
-	}
-    public void teleopPeriodic() { // This is teleop	   
- 	   chassis.tankDrive(-leftJoystick.getY(), -rightJoystick.getY());
- 	   
- 	   if(rbutton4.get()) {
- 		   talon4.setPosition(50);
- 		   printPos(talon4);
- 		   resetTalon(talon4);
- 	   }
- 	   if(rbutton3.get()) {
- 		   talon4.setPosition(25);
- 		   printPos(talon4);
- 		   resetTalon(talon4);
- 	   }
+    
+    public void teleopInit() {
+    	// Initializes our planetary encoder hooked up to our CANTalon
+    	talon1.changeControlMode(TalonControlMode.Position);
+    	talon1.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+    	talon1.setPID(0, 0, 0);
+    	talon1.enableControl();
     }
     
-    public void resetTalon(CANTalon talon) {
-    	talon.setPosition(0);
-    	currentPosition = talon.getPosition();
+    public void teleopPeriodic() {
+    	chassis.drive(-leftJoystick.getY(), -rightJoystick.getY()); // Really basic drive for testing.
+    	
+    	if(lButton1.get() && encTest) {
+    		printPos(talon1);
+    		talon1.set(1440);
+    		printPos(talon1);
+    		encTest = false;
+    	}
     }
     
     public void printPos(CANTalon talon) {
-    	System.out.println(talon.getPosition());
+    	System.out.println("Pos: " + talon.getPosition());
     }
+    
+    public void printEncPos(CANTalon talon) {
+    	System.out.println("Enc Pos: " + talon.getEncPosition());
+    }
+    
+    
+    
 }
