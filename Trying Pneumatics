@@ -1,0 +1,39 @@
+package org.usfirst.frc.team4461.robot;
+
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.vision.AxisCamera;
+import edu.wpi.first.wpilibj.Compressor;
+//#tried
+
+public class Airsystem extends IterativeRobot {
+	private Joystick Driverstick;
+	private AxisCamera camera;
+	private Solenoid s1;						// Defining Solenoid
+	private Compressor airCompressor;
+	
+	public Airsystem() {
+		Driverstick = new Joystick(1);			//USB port
+		s1 = new Solenoid(1);					// solenoid port
+		airCompressor = new Compressor(1,1);
+		airCompressor.start();					//start Compressor
+		
+	}
+	
+public void autonomous(){
+}
+public void operatorControl(){
+	if(Driverstick.getRawButton(1) == true)
+	{
+		s1.set(true);
+	}
+	if(Driverstick.getRawButton(2) == true)
+	{
+		s1.set(false);
+	}
+}
+}
+
+// if you guys can help me out with this code that would be great, I really don't know what else to do for this.
+// -Anna
