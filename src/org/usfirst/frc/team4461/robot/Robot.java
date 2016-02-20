@@ -20,11 +20,15 @@ public class Robot extends IterativeRobot {
 	boolean autoBreak = true; // This determines when to break in the autonomous code (see autonomousPeriodic)
 	boolean encTest = true; // Just for testing our encoder
 	
+	MoveSequence mover;
+	
+	final static int QUAD_TICKS = 4096;
+	
     // CANTalons
-    CANTalon talon1 = new CANTalon(1);
-    CANTalon talon2 = new CANTalon(2);
-    CANTalon talon3 = new CANTalon(3);
-    CANTalon talon4 = new CANTalon(4);
+    static CANTalon talon1 = new CANTalon(1);
+    static CANTalon talon2 = new CANTalon(2);
+    static CANTalon talon3 = new CANTalon(3);
+    static CANTalon talon4 = new CANTalon(4);
     
     // Joysticks
     Joystick leftJoystick = new Joystick(0);
@@ -60,13 +64,16 @@ public class Robot extends IterativeRobot {
     }
     
     public void autonomousInit() {
+    	mover = new MoveSequence();
+    	
+    	mover.init();
     	autoBreak = true; // Resets the autonomous break
-    	chassis.setSafetyEnabled(false); // Allows us to do autonomous
+    	chassis.setSafetyEnabled(true); // Allows us to do autonomous
     }
     
     public void autonomousPeriodic() {
     	while(autoBreak) { // Put auto code above the "autoBreak = false;" line.
-    		
+    		mover.move();
     		autoBreak = false;
     	}
     }
@@ -77,11 +84,11 @@ public class Robot extends IterativeRobot {
     	talon1.changeControlMode(TalonControlMode.Position);
     	talon1.setFeedbackDevice(FeedbackDevice.QuadEncoder);
     	talon1.setPID(.0001, 0, 0);
-    	talon1.configEncoderCodesPerRev(1440);
+    	talon1.configEncoderCodesPerRev(QUAD_TICKS); //___ for 90 degrees
     	talon1.enableControl();
-    	//Only use on CANTalon's above 4
-    	//CANTalon 1-4 are used for Tank Drive
-    	//Currently set to CANTalon 1 for testing
+    	//Only use on motor's above 4
+    	//Motors 1-4 are used for Tank Drive
+    	// Currently set to motor 1 for testing
     }
     
     public void teleopPeriodic() {
@@ -91,7 +98,7 @@ public class Robot extends IterativeRobot {
     	if(lButton1.get() && encTest) {
     		printPos(talon1);
     		printEncPos(talon1);
-    		talon1.set(1440);
+    		talon1.set(QUAD_TICKS);
     		printPos(talon1);
     		printEncPos(talon1);
     		encTest = false;
