@@ -7,8 +7,11 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.CameraServer;
 
-/**
+/**	
  * 
  * @author Team 4461
  * @version 2.2
@@ -23,6 +26,8 @@ public class Robot extends IterativeRobot {
 	MoveSequence mover;
 	
 	final static int QUAD_TICKS = 4096;
+	//0.23724365234375 4096 set 10
+	// 0.7001736111111111 1440 set 10
 	
     // CANTalons
     static CANTalon talon1 = new CANTalon(1);
@@ -59,6 +64,12 @@ public class Robot extends IterativeRobot {
     // Robot Drive
     RobotDrive chassis = new RobotDrive(talon1, talon2, talon3, talon4);
     
+    //Pneumatics
+    Solenoid solOne = new Solenoid(1, 2);
+    Solenoid solTwo = new Solenoid(3, 4);
+    
+    Compressor comp = new Compressor(1);
+    
     public void robotInit() {
     	
     }
@@ -83,26 +94,44 @@ public class Robot extends IterativeRobot {
     	encTest = true;
     	talon1.changeControlMode(TalonControlMode.Position);
     	talon1.setFeedbackDevice(FeedbackDevice.QuadEncoder);
-    	talon1.setPID(.0001, 0, 0);
+    	talon1.setPID(.001, 0, 0);
     	talon1.configEncoderCodesPerRev(QUAD_TICKS); //___ for 90 degrees
     	talon1.enableControl();
+		talon1.setPosition(0);
+    	System.out.println("comcom");
+//		talon1.set(0);
     	//Only use on motor's above 4
     	//Motors 1-4 are used for Tank Drive
     	// Currently set to motor 1 for testing
     }
     
     public void teleopPeriodic() {
+    	printPos(talon1);
     	talon1.enableControl();
-    	chassis.tankDrive(-leftJoystick.getY(), -rightJoystick.getY()); // Really basic drive for testing.
-    	
-    	if(lButton1.get() && encTest) {
+//    	chassis.tankDrive(-leftJoystick.getY(), -rightJoystick.getY()); // Really basic drive for testing.
     		printPos(talon1);
-    		printEncPos(talon1);
-    		talon1.set(QUAD_TICKS);
+    		talon1.set(1);
     		printPos(talon1);
-    		printEncPos(talon1);
-    		encTest = false;
+    		
+    	//Pneumatics
+    	if (lButton1.get()){
+    		comp.enabled();
+    		comp.start();
     	}
+    	else{
+    	}
+    		
+		if (rButton1.get()) {
+			solOne.set(true);
+		} else {
+			solOne.set(false);
+		}
+		if (rButton2.get()) {
+			solTwo.set(true);
+		} else {
+			solTwo.set(false);
+			
+		}
     }
     
     public void printPos(CANTalon talon) {
