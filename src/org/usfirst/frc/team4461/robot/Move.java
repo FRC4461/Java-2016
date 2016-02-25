@@ -6,6 +6,7 @@ package org.usfirst.frc.team4461.robot;
 /**
  * @author john
  *
+ * Adding sample code
  */
 public class Move {
 	public static final double WHEEL_CIRCUMFERENCE = .2; // meters for instance - I am making this number up
