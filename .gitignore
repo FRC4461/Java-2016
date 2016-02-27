@@ -1,2 +1,4 @@
 /bin/
 *.class
+bin/org/usfirst/frc/team4461/robot/Robot.class
+dist/FRCUserProgram.jar

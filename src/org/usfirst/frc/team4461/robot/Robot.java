@@ -1,20 +1,16 @@
 package org.usfirst.frc.team4461.robot;
 
 import edu.wpi.first.wpilibj.CANTalon;
-import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
-import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**	
  * 
  * @author Team 4461
- * @version 2.2
+ * @version 2.6
  * 
  */
 
@@ -22,19 +18,18 @@ public class Robot extends IterativeRobot {
 	// Variables
 	boolean autoBreak = true; // This determines when to break in the autonomous code (see autonomousPeriodic)
 	boolean encTest = true; // Just for testing our encoder
-	
 	MoveSequence mover;
-	
-	final static int QUAD_TICKS = 4096;
-	//0.23724365234375 4096 set 10
-	// 0.7001736111111111 1440 set 10
+	final static int QUAD_TICKS = 1024;	//0.23724365234375 4096 set 10 | 0.7001736111111111 1440 set 10
 	
     // CANTalons
     static CANTalon talon1 = new CANTalon(1);
     static CANTalon talon2 = new CANTalon(2);
     static CANTalon talon3 = new CANTalon(3);
     static CANTalon talon4 = new CANTalon(4);
-    
+
+    // Robot Drive
+    RobotDrive chassis = new RobotDrive(talon1, talon2, talon3, talon4);
+
     // Joysticks
     Joystick leftJoystick = new Joystick(0);
     Joystick rightJoystick = new Joystick(1);
@@ -49,6 +44,8 @@ public class Robot extends IterativeRobot {
     JoystickButton lButton7 = new JoystickButton(leftJoystick, 7);
     JoystickButton lButton8 = new JoystickButton(leftJoystick, 8);
     JoystickButton lButton9 = new JoystickButton(leftJoystick, 9);
+    JoystickButton lButton10 = new JoystickButton(leftJoystick, 10);
+    JoystickButton lButton11 = new JoystickButton(leftJoystick, 11);
     
     // Right Joystick Buttons
     JoystickButton rButton1 = new JoystickButton(rightJoystick, 1);
@@ -60,86 +57,85 @@ public class Robot extends IterativeRobot {
     JoystickButton rButton7 = new JoystickButton(rightJoystick, 7);
     JoystickButton rButton8 = new JoystickButton(rightJoystick, 8);
     JoystickButton rButton9 = new JoystickButton(rightJoystick, 9);
-    
-    // Robot Drive
-    RobotDrive chassis = new RobotDrive(talon1, talon2, talon3, talon4);
-    
-    //Pneumatics
-    Solenoid solOne = new Solenoid(1, 2);
-    Solenoid solTwo = new Solenoid(3, 4);
-    
-    Compressor comp = new Compressor(1);
+    JoystickButton rButton10 = new JoystickButton(rightJoystick, 10);
+    JoystickButton rButton11 = new JoystickButton(rightJoystick, 11);
     
     public void robotInit() {
-    	
-    }
+    	SmartDashboard.putNumber("P", .001);
+    	SmartDashboard.putNumber("I", 0);
+    	SmartDashboard.putNumber("D", 0);
+    }//End roboInit
     
     public void autonomousInit() {
     	mover = new MoveSequence();
-    	
     	mover.init();
     	autoBreak = true; // Resets the autonomous break
     	chassis.setSafetyEnabled(true); // Allows us to do autonomous
-    }
+    }//End autonomousInit
     
     public void autonomousPeriodic() {
     	while(autoBreak) { // Put auto code above the "autoBreak = false;" line.
     		mover.move();
     		autoBreak = false;
-    	}
-    }
+    	}//End While
+    }//End autonomousPeriodic
     
     public void teleopInit() {
-    	// Initializes our planetary encoder hooked up to our CANTalon
-    	encTest = true;
-    	talon1.changeControlMode(TalonControlMode.Position);
-    	talon1.setFeedbackDevice(FeedbackDevice.QuadEncoder);
-    	talon1.setPID(.001, 0, 0);
-    	talon1.configEncoderCodesPerRev(QUAD_TICKS); //___ for 90 degrees
-    	talon1.enableControl();
-		talon1.setPosition(0);
-    	System.out.println("comcom");
-//		talon1.set(0);
-    	//Only use on motor's above 4
-    	//Motors 1-4 are used for Tank Drive
-    	// Currently set to motor 1 for testing
-    }
+    }//End teleopInit
     
     public void teleopPeriodic() {
-    	printPos(talon1);
-    	talon1.enableControl();
-//    	chassis.tankDrive(-leftJoystick.getY(), -rightJoystick.getY()); // Really basic drive for testing.
-    		printPos(talon1);
-    		talon1.set(1);
-    		printPos(talon1);
-    		
-    	//Pneumatics
-    	if (lButton1.get()){
-    		comp.enabled();
-    		comp.start();
+    	chassis.tankDrive(-leftJoystick.getY(), -rightJoystick.getY()); // Really basic drive for testing.
+    }//End teleopPeriodic
+
+    public void testInit() {
+		 talon1.setPosition(0);
+		 talon2.setPosition(0);
+		 talon3.setPosition(0);
+		 talon4.setPosition(0);
+    }//End testInit
+
+    public void testPeriodic() {
+    	
+    	if(lButton1.get()){
+    		talon4.reset();
+    		talon4.disable();
     	}
-    	else{
+    	
+    	if(rButton1.get()){
+    		talon4.reset();
+    		talon4.disable();
     	}
     		
-		if (rButton1.get()) {
-			solOne.set(true);
-		} else {
-			solOne.set(false);
-		}
-		if (rButton2.get()) {
-			solTwo.set(true);
-		} else {
-			solTwo.set(false);
-			
-		}
-    }
+    	
+    	 boolean Pressed = lButton6.get();
+    	
+    	 boolean otherPressed = lButton5.get();
+    	 
+    	 if (otherPressed) {
+    		double P = SmartDashboard.getNumber("P", .001);
+    	 	double I = SmartDashboard.getNumber("I", 0);
+    	 	double D = SmartDashboard.getNumber("D", 0);
+    	 	QuadSet.talonLoad(P, I, D);
+    	 }
+
+		 SmartDashboard.putNumber("PosP", talon4.get());
+    	 if(Pressed){
+    		 talon1.set(3);
+    		 talon2.set(3);
+    		 talon3.set(3);
+    		 talon4.set(1);
+    	 }
+    	 else{
+    		 talon1.setPosition(0);
+    		 talon2.setPosition(0);
+    		 talon3.setPosition(0);
+    		 //talon4.setPosition(0);
+    		 talon1.set(0);
+    		 talon2.set(0);
+    		 talon3.set(0);
+    		 //talon4.set(0);
+    	 }
     
-    public void printPos(CANTalon talon) {
-    	System.out.println("Pos: " + talon.getPosition());
-    }
+    }//End testPeriodic
     
-    public void printEncPos(CANTalon talon) {
-    	System.out.println("Enc Pos: " + talon.getEncPosition());
-    }
-    
-}
+}//End Class Robot

@@ -31,7 +31,8 @@ public class MoveSequence {
 		state = RoutineOne.Start;
 		done = false;
 	}
-	
+
+	//Setting Talon to PID
 	private void talonInit(CANTalon talon) {
 	    talon.changeControlMode(TalonControlMode.Position);
 	    talon.setFeedbackDevice(FeedbackDevice.QuadEncoder);
@@ -42,6 +43,7 @@ public class MoveSequence {
 		System.out.println("move1");
 	}
 	
+	//Moving from 1 to 2
 	void move(){
 		switch(state){
 		case Start:
