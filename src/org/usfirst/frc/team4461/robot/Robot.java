@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+
 /**	
  * 
  * @author Team 4461
@@ -17,9 +18,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends IterativeRobot {
 	// Variables
 	boolean autoBreak = true; // This determines when to break in the autonomous code (see autonomousPeriodic)
-	boolean encTest = true; // Just for testing our encoder
 	MoveSequence mover;
-	final static int QUAD_TICKS = 1024;	//0.23724365234375 4096 set 10 | 0.7001736111111111 1440 set 10
+	final static int QUAD_TICKS = 1024;
 	
     // CANTalons
     static CANTalon talon1 = new CANTalon(1);
@@ -33,6 +33,19 @@ public class Robot extends IterativeRobot {
     // Joysticks
     Joystick leftJoystick = new Joystick(0);
     Joystick rightJoystick = new Joystick(1);
+    Joystick xBox = new Joystick(2);
+    
+    // Xbox Controller
+    JoystickButton xBox1 = new JoystickButton(xBox, 1);// A
+    JoystickButton xBox2 = new JoystickButton(xBox, 2);// B
+    JoystickButton xBox3 = new JoystickButton(xBox, 3);// X
+    JoystickButton xBox4 = new JoystickButton(xBox, 4);// Y
+    JoystickButton xBox5 = new JoystickButton(xBox, 5);// LB
+    JoystickButton xBox6 = new JoystickButton(xBox, 6);// RB
+    JoystickButton xBox7 = new JoystickButton(xBox, 7);// Back Button
+    JoystickButton xBox8 = new JoystickButton(xBox, 8);// Menu
+    JoystickButton xBox9 = new JoystickButton(xBox, 9);// LTrig pressed
+    JoystickButton xBox10 = new JoystickButton(xBox, 10);// RTrig pressed
     
     // Left Joystick Buttons
     JoystickButton lButton1 = new JoystickButton(leftJoystick, 1);
@@ -60,6 +73,8 @@ public class Robot extends IterativeRobot {
     JoystickButton rButton10 = new JoystickButton(rightJoystick, 10);
     JoystickButton rButton11 = new JoystickButton(rightJoystick, 11);
     
+    
+    
     public void robotInit() {
     	SmartDashboard.putNumber("P", .001);
     	SmartDashboard.putNumber("I", 0);
@@ -76,15 +91,34 @@ public class Robot extends IterativeRobot {
     public void autonomousPeriodic() {
     	while(autoBreak) { // Put auto code above the "autoBreak = false;" line.
     		mover.move();
+    		
     		autoBreak = false;
     	}//End While
     }//End autonomousPeriodic
     
     public void teleopInit() {
+    	
     }//End teleopInit
     
     public void teleopPeriodic() {
     	chassis.tankDrive(-leftJoystick.getY(), -rightJoystick.getY()); // Really basic drive for testing.
+    	
+    	double AngleA = talon1.getPosition();
+    	double AngleB = talon2.getPosition();
+    	boolean Lock = true;
+    	
+    	if(lButton1.get()){
+    		Lock = false;
+    	}
+    	
+    	if(AngleA > 235.52 && Lock){
+    		talon1.set(0);
+    	}
+    	
+    	if(AngleB > 512 && Lock){
+    		talon2.set(0);
+    	}
+    	
     }//End teleopPeriodic
 
     public void testInit() {
@@ -105,7 +139,6 @@ public class Robot extends IterativeRobot {
     		talon4.reset();
     		talon4.disable();
     	}
-    		
     	
     	 boolean Pressed = lButton6.get();
     	
