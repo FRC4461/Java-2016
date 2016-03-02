@@ -7,10 +7,7 @@ import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 public class MoveSequence {
 	public enum RoutineOne {
 		Start,
-		MoveForward1,
-		TurnLeft1,
-		MoveForward2,
-		TurnLeft2,
+		MoveBackwards,
 		End,
 		Print,
 		}
@@ -19,7 +16,7 @@ public class MoveSequence {
 	private boolean done; 
 	
 	public static void main(String[] arg){
-		System.out.println("moo");
+		System.out.println("Running Routine 1");
 		MoveSequence ms = new MoveSequence();
 		ms.init();
 		while(ms.state != RoutineOne.Print){
@@ -48,22 +45,10 @@ public class MoveSequence {
 		switch(state){
 		case Start:
 			startFunction();
-			if (done) state = RoutineOne.MoveForward1;
+			if (done) state = RoutineOne.MoveBackwards;
 			break;
-		case MoveForward1:
-			move1Function();
-			if (done) state = RoutineOne.TurnLeft1;
-			break;
-		case TurnLeft1:
-			turn1Function();
-			if (done) state = RoutineOne.MoveForward2;
-			break;
-		case MoveForward2:
-			move2Function();
-			if (done) state = RoutineOne.TurnLeft2;
-			break;
-		case TurnLeft2:
-			turn2Function();
+		case MoveBackwards:
+			movebackwardsFunction();
 			if (done) state = RoutineOne.End;
 		case End:
 			endFunction();
@@ -81,23 +66,12 @@ public class MoveSequence {
 		System.out.println("start");
 		done = true;
 	}
-	 void move1Function(){
-		Robot.talon1.set(1440);
-		Robot.talon2.set(1440);
-		Robot.talon3.set(1440);
-		Robot.talon4.set(1440);
-		done = true;
-	}
-	 void turn1Function(){
-		System.out.println("turn1");
-		done = true;
-	}
-	 void move2Function(){
-		System.out.println("move2");
-		done = true;
-	}
-	 void turn2Function(){
-		System.out.println("turn2");
+	 void movebackwardsFunction(){
+		Robot.talon1.set(-1024);
+		Robot.talon2.set(-1024);
+		Robot.talon3.set(-1024);
+		Robot.talon4.set(-1024);
+		System.out.println("movebackwards1");
 		done = true;
 	}
 	 void endFunction(){
@@ -109,4 +83,3 @@ public class MoveSequence {
 		done = true;
 	}
 }
-
