@@ -1,51 +1,65 @@
 package org.usfirst.frc.team4461.robot;
 
 import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import edu.wpi.first.wpilibj.Solenoid;
 
 /**	
  * 
  * @author Team 4461
- * @version 2.6
+ * @version 3.0
  * 
  */
 
 public class Robot extends IterativeRobot {
+	
 	// Variables
 	boolean autoBreak = true; // This determines when to break in the autonomous code (see autonomousPeriodic)
-	MoveSequence mover;
+	//
+	double AngleA = ctalon1.getPosition();
+	double AngleB = ctalon2.getPosition();
+	boolean Lock = true; 
 	final static int QUAD_TICKS = 1024;
 	
     // CANTalons
-    static CANTalon talon1 = new CANTalon(1);
-    static CANTalon talon2 = new CANTalon(2);
-    static CANTalon talon3 = new CANTalon(3);
-    static CANTalon talon4 = new CANTalon(4);
+    static CANTalon ctalon1 = new CANTalon(1);	//TANKDRIVE RIGHT MOTOR
+    static CANTalon ctalon2 = new CANTalon(2);	//TANKDRIVE RIGHT MOTOR
+    static CANTalon ctalon3 = new CANTalon(3);	//TANKDRIVE LEFT MOTOR
+    static CANTalon ctalon4 = new CANTalon(4);	//TANKDRIVE LEFT MOTOR
+    static CANTalon ctalon5 = new CANTalon(5);	//Right wheel
+    static CANTalon ctalon6 = new CANTalon(6);	//top
+    
+//    //Talons
+    static Talon talon1 = new Talon(9);	//Left Shooter
 
     // Robot Drive
-    RobotDrive chassis = new RobotDrive(talon1, talon2, talon3, talon4);
+    RobotDrive chassis = new RobotDrive(ctalon1, ctalon2, ctalon3, ctalon4);
+    
+    //Solenoid
+    Solenoid SD = new Solenoid(1);
 
     // Joysticks
     Joystick leftJoystick = new Joystick(0);
     Joystick rightJoystick = new Joystick(1);
     Joystick xBox = new Joystick(2);
     
-    // Xbox Controller
-    JoystickButton xBox1 = new JoystickButton(xBox, 1);// A
-    JoystickButton xBox2 = new JoystickButton(xBox, 2);// B
-    JoystickButton xBox3 = new JoystickButton(xBox, 3);// X
-    JoystickButton xBox4 = new JoystickButton(xBox, 4);// Y
-    JoystickButton xBox5 = new JoystickButton(xBox, 5);// LB
-    JoystickButton xBox6 = new JoystickButton(xBox, 6);// RB
-    JoystickButton xBox7 = new JoystickButton(xBox, 7);// Back Button
-    JoystickButton xBox8 = new JoystickButton(xBox, 8);// Menu
-    JoystickButton xBox9 = new JoystickButton(xBox, 9);// LTrig pressed
-    JoystickButton xBox10 = new JoystickButton(xBox, 10);// RTrig pressed
+    // Xbox Controller Buttons
+    JoystickButton xButton1 = new JoystickButton(xBox, 1);// A
+    JoystickButton xButton2 = new JoystickButton(xBox, 2);// B
+    JoystickButton xButton3 = new JoystickButton(xBox, 3);// X
+    JoystickButton xButton4 = new JoystickButton(xBox, 4);// Y
+    JoystickButton xButton5 = new JoystickButton(xBox, 5);// LB
+    JoystickButton xButton6 = new JoystickButton(xBox, 6);// RB
+    JoystickButton xButton7 = new JoystickButton(xBox, 7);// Back Button
+    JoystickButton xButton8 = new JoystickButton(xBox, 8);// Menu
+    JoystickButton xButton9 = new JoystickButton(xBox, 9);// LTrig pressed
+    JoystickButton xButton10 = new JoystickButton(xBox, 10);// RTrig pressed
     
     // Left Joystick Buttons
     JoystickButton lButton1 = new JoystickButton(leftJoystick, 1);
@@ -73,102 +87,48 @@ public class Robot extends IterativeRobot {
     JoystickButton rButton10 = new JoystickButton(rightJoystick, 10);
     JoystickButton rButton11 = new JoystickButton(rightJoystick, 11);
     
+//    public void autonomousInit() {
+//    	mover = new MoveSequence();
+//    	mover.init();
+//    	autoBreak = true; // Resets the autonomous break
+//    	chassis.setSafetyEnabled(true); // Allows us to do autonomous
+//    }//End autonomousInit
     
-    
-    public void robotInit() {
-    	SmartDashboard.putNumber("P", .001);
-    	SmartDashboard.putNumber("I", 0);
-    	SmartDashboard.putNumber("D", 0);
-    }//End roboInit
-    
-    public void autonomousInit() {
-    	mover = new MoveSequence();
-    	mover.init();
-    	autoBreak = true; // Resets the autonomous break
-    	chassis.setSafetyEnabled(true); // Allows us to do autonomous
-    }//End autonomousInit
-    
-    public void autonomousPeriodic() {
-    	while(autoBreak) { // Put auto code above the "autoBreak = false;" line.
-    		mover.move();
-    		
-    		autoBreak = false;
-    	}//End While
-    }//End autonomousPeriodic
-    
-    public void teleopInit() {
-    	
-    }//End teleopInit
-    
+//    public void autonomousPeriodic() {
+//    	while(autoBreak) { // Put auto code above the "autoBreak = false;" line.
+//    		mover.move();
+//    		autoBreak = false;
+//    	}//End While
+//    }//End autonomousPeriodic
+
     public void teleopPeriodic() {
-    	chassis.tankDrive(-leftJoystick.getY(), -rightJoystick.getY()); // Really basic drive for testing.
-    	
-    	double AngleA = talon1.getPosition();
-    	double AngleB = talon2.getPosition();
-    	boolean Lock = true;
-    	
-    	if(lButton1.get()){
-    		Lock = false;
+    	chassis.tankDrive(leftJoystick.getY()*.9, rightJoystick.getY()*.9); // Really basic drive for testing.//    	if(xButton6.get()){		//Right Bumper
+//    		SD.set(false);
+//    		ctalon1.set(.5);
+//    		SD.set(true);
+//    	}//End if
+//    	
+    	if(xButton1.get()){
+    		ctalon5.set(.75);
+    		talon1.set(.75);		  //Ball Grabber
+    	}//End if
+    	else if(xButton2.get()){
+    		ctalon5.set(-.5);
+    		talon1.set(-.5);           //Forward Shooting FULL
     	}
-    	
-    	if(AngleA > 235.52 && Lock){
+    	else{
+    		ctalon5.set(0);
     		talon1.set(0);
     	}
-    	
-    	if(AngleB > 512 && Lock){
-    		talon2.set(0);
+    	if(xButton1.get()){
+    		ctalon6.set(-.75);
     	}
-    	
+    	else if(xButton4.get()){
+    		ctalon6.set(.5);
+    	}
+    	else{
+    		ctalon6.set(0);
+    	}
+    
     }//End teleopPeriodic
-
-    public void testInit() {
-		 talon1.setPosition(0);
-		 talon2.setPosition(0);
-		 talon3.setPosition(0);
-		 talon4.setPosition(0);
-    }//End testInit
-
-    public void testPeriodic() {
-    	
-    	if(lButton1.get()){
-    		talon4.reset();
-    		talon4.disable();
-    	}
-    	
-    	if(rButton1.get()){
-    		talon4.reset();
-    		talon4.disable();
-    	}
-    	
-    	 boolean Pressed = lButton6.get();
-    	
-    	 boolean otherPressed = lButton5.get();
-    	 
-    	 if (otherPressed) {
-    		double P = SmartDashboard.getNumber("P", .001);
-    	 	double I = SmartDashboard.getNumber("I", 0);
-    	 	double D = SmartDashboard.getNumber("D", 0);
-    	 	QuadSet.talonLoad(P, I, D);
-    	 }
-
-		 SmartDashboard.putNumber("PosP", talon4.get());
-    	 if(Pressed){
-    		 talon1.set(3);
-    		 talon2.set(3);
-    		 talon3.set(3);
-    		 talon4.set(1);
-    	 }
-    	 else{
-    		 talon1.setPosition(0);
-    		 talon2.setPosition(0);
-    		 talon3.setPosition(0);
-    		 //talon4.setPosition(0);
-    		 talon1.set(0);
-    		 talon2.set(0);
-    		 talon3.set(0);
-    		 //talon4.set(0);
-    	 }
-    
-    }//End testPeriodic
-    
 }//End Class Robot
