@@ -2,7 +2,6 @@ package org.usfirst.frc.team4461.robot;
 
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotDrive;
@@ -102,19 +101,19 @@ public class Robot extends IterativeRobot {
 //    }//End autonomousPeriodic
 
     public void teleopPeriodic() {
-    	chassis.tankDrive(leftJoystick.getY()*.9, rightJoystick.getY()*.9); // Really basic drive for testing.//    	if(xButton6.get()){		//Right Bumper
-//    		SD.set(false);
-//    		ctalon1.set(.5);
-//    		SD.set(true);
-//    	}//End if
-//    	
-    	if(xButton1.get()){
+    	chassis.tankDrive(leftJoystick.getY()*.9, rightJoystick.getY()*.9); // Really basic drive for testing
+
+    	if(xButton1.get()){//Ball Retrive
     		ctalon5.set(.75);
-    		talon1.set(.75);		  //Ball Grabber
+    		talon1.set(.75);
     	}//End if
-    	else if(xButton2.get()){
+    	else if(xButton2.get()){//Half Power Shoot
     		ctalon5.set(-.5);
-    		talon1.set(-.5);           //Forward Shooting FULL
+    		talon1.set(-.5);
+    	}
+    	else if(xButton3.get()){//Full Power Shoot
+    		ctalon5.set(-.8);
+    		talon1.set(-.8); 
     	}
     	else{
     		ctalon5.set(0);
@@ -129,6 +128,13 @@ public class Robot extends IterativeRobot {
     	else{
     		ctalon6.set(0);
     	}
-    
     }//End teleopPeriodic
+
+    public void testPeriodic() {
+    	ctalon1.set(.1);
+    	ctalon2.set(.1);
+    	ctalon3.set(.1);
+    	ctalon4.set(.1);
+    }//End testPeriodic
+    
 }//End Class Robot
